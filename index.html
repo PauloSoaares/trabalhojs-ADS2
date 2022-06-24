@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="">
+        <input name="campoCriaPost" placeholder="Digite o seu post" type="text">
+        <button type="submit">post</button>
+    </form>
+
+    <ul class="listaDePosts">
+
+    </ul>
+
+
+
+
+
+
+
+
+    
+    <script>
+
+        const miniTwitter = {
+            usuarios: [
+                {
+                    username: 'paulo'
+                }
+            ],
+            posts: [
+                {
+                    id: 1,
+                    owner: 'paulo',
+                    content: 'Meu primeiro tweet'
+                }
+            ],
+            readPosts() {
+                    miniTwitter.posts.forEach(({owner, content}) => {
+                    miniTwitter.criaPost({owner: owner, content: content }, true);
+                })
+            },
+            criaPost(dados, htmlOnly = false) {
+                if(!htmlOnly) {
+                    // Cria Posts na memoria (array/objeto)
+                    miniTwitter.posts.push({
+                        id: miniTwitter.posts.length + 1,
+                        owner: dados.owner,
+                        content: dados.content
+                    });
+                }
+                
+                // Cria Posts no html
+                const $listaDePosts = document.querySelector('.listaDePosts');
+                $listaDePosts.insertAdjacentHTML('afterbegin', 
+                `<li>
+                    ${dados.content}
+                    <button class="btn-delete">Delete</button>
+                </li>`);
+            },
+        };
+
+        //[READ]
+        miniTwitter.readPosts();
+
+        //[DELETE]
+        document.querySelector('.listaDePosts').addEventListener('click', function (infosDoEvento){
+            console.log('Ouve um click', infosDoEvento.target);
+            const isBtnDeleteClick = infosDoEvento.target.classList.contains('btn-delete')
+            if(isBtnDeleteClick) {
+                console.log('Clicou no botão de apagar');
+            }
+        })
+
+
+        const $meuForm = document.querySelector('form');
+        console.log($meuForm);
+
+        $meuForm.addEventListener('submit', function criaPostController(infosDoEvento) {
+            infosDoEvento.preventDefault();
+            console.log('estamos criando um poste novo')
+            const $campoCriaPost = document.querySelector('input[name="campoCriaPost"]');
+
+            miniTwitter.criaPost({ owner: 'paulo', content: $campoCriaPost.value });
+            
+            $campoCriaPost.value = '';
+        })
+    </script>
+</body>
+</html>
